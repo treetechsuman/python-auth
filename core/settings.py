@@ -42,12 +42,14 @@ INSTALLED_APPS = [
     'djoser',
     'users',
     'drf_spectacular',
+    'corsheaders',
     
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # Add this line
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -173,3 +175,9 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://192.168.1.105:5173",  # Replace with your React app's URL
+    "http://localhost:5173"
+]
+CORS_ALLOW_CREDENTIALS = True
