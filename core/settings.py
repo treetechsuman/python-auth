@@ -138,7 +138,7 @@ AUTH_USER_MODEL = 'users.CustomUser'
 
 DJOSER = {
     'SET_PASSWORD_RETYPE': True,  # Requires re_new_password for confirmation
-    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,  # Sends confirmation email after password change
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': False,  # Sends confirmation email after password change
     'USER_CREATE_PASSWORD_RETYPE': True,
     'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': 'activate/{uid}/{token}',
