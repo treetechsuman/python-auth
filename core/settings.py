@@ -1,5 +1,6 @@
 from pathlib import Path
-
+from corsheaders.defaults import default_headers
+from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -8,12 +9,32 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-e)rv!#2)=0+_8*nc@eav9$n1n7$*u=vy+jpsfr1a99@ix@*tls'
+#SECRET_KEY = 'django-insecure-e)rv!#2)=0+_8*nc@eav9$n1n7$*u=vy+jpsfr1a99@ix@*tls'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = True
+# Secret Key
+SECRET_KEY = config('SECRET_KEY')
 
-ALLOWED_HOSTS = []
+# Debug Mode
+DEBUG = config('DEBUG', default=False, cast=bool)
+
+# Allowed Hosts
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+
+# Frontend URL
+FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:5173')
+
+# Email Settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+
+
 
 
 # Application definition
@@ -137,12 +158,19 @@ SIMPLE_JWT = {
 AUTH_USER_MODEL = 'users.CustomUser'
 
 DJOSER = {
+    'USER_ID_FIELD': 'email',  # Use email as the unique identifier
+    'LOGIN_FIELD': 'email',  # Specify email as the login field
     'SET_PASSWORD_RETYPE': True,  # Requires re_new_password for confirmation
-    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': False,  # Sends confirmation email after password change
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,  # Sends confirmation email after password change
     'USER_CREATE_PASSWORD_RETYPE': True,
-    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_URL': 'http://192.168.1.105:5173/password/reset/confirm/{uid}/{token}',
+    "PASSWORD_RESET_CONFIRM_RETYPE": True,
     'ACTIVATION_URL': 'activate/{uid}/{token}',
-    'SEND_ACTIVATION_EMAIL': False,
+    'SEND_ACTIVATION_EMAIL': True,
+    "EMAIL": {
+        #"password_reset": "djoser.email.PasswordResetEmail",
+        "password_reset": "users.emails.CustomPasswordResetEmail",
+    },
     'SERIALIZERS': {
         'user_create': 'users.serializers.CustomUserCreateSerializer',
         'user': 'users.serializers.CustomUserSerializer',
@@ -172,3 +200,32 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173"
 ]
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS",
+]
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'X-CSRFTOKEN',  # Explicitly allow this header
+]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "http://192.168.1.105:5173",
+]
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "DEBUG",
+    },
+}
