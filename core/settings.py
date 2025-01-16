@@ -20,7 +20,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 # Allowed Hosts
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1','https://react-stater.vercel.app/', 'localhost','mesumandahal.pythonanywhere.com']
 
 # Frontend URL
 FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:5173')
@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'users',
     'drf_spectacular',
     'corsheaders',
-    
+
 ]
 
 MIDDLEWARE = [
@@ -170,6 +170,7 @@ DJOSER = {
     "EMAIL": {
         #"password_reset": "djoser.email.PasswordResetEmail",
         "password_reset": "users.emails.CustomPasswordResetEmail",
+        "activation": "users.emails.CustomAccountActivationEmail",
     },
     'SERIALIZERS': {
         'user_create': 'users.serializers.CustomUserCreateSerializer',
@@ -197,7 +198,8 @@ STATICFILES_FINDERS = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://192.168.1.105:5173",  # Replace with your React app's URL
-    "http://localhost:5173"
+    "http://localhost:5173",
+    "https://react-stater.vercel.app"
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = [
@@ -214,6 +216,7 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://192.168.1.105:5173",
+    "https://react-stater.vercel.app/",
 ]
 
 LOGGING = {

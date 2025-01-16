@@ -1,0 +1,32 @@
+{% block subject %}
+Activate Your Account - My Application
+{% endblock subject %}
+
+{% block text_body %}
+Hi,
+
+Thank you for registering with My Application! Click the link below to activate your account:
+
+{{ url }}
+
+If you did not register, you can safely ignore this email.
+
+Thanks,  
+The My Application Team
+{% endblock text_body %}
+
+{% block html_body %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Activate Your Account</title>
+</head>
+<body>
+    <p>Hi,</p>
+    <p>Thank you for registering with My Application! Click the link below to activate your account:</p>
+    <p><a href="{{ url }}">Activate Account</a></p>
+    <p>If you did not register, you can safely ignore this email.</p>
+    <p>Thanks,<br>The My Application Team</p>
+</body>
+</html>
+{% endblock html_body %}
