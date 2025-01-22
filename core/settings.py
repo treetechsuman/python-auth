@@ -1,6 +1,25 @@
 from pathlib import Path
 from corsheaders.defaults import default_headers
 from decouple import config
+
+from importlib import import_module
+
+# Import users app settings
+try:
+    users_settings = import_module('users.settings')
+    globals().update({k: v for k, v in users_settings.__dict__.items() if not k.startswith("__")})
+except ImportError:
+    raise Exception("Error loading settings for the users app")
+
+
+# Load CORS and CSRF settings
+try:
+    cors_settings = import_module('core.cors_settings')
+    globals().update({k: v for k, v in cors_settings.__dict__.items() if not k.startswith("__")})
+except ImportError:
+    raise Exception("Error loading CORS settings")
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -141,43 +160,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #my added package setting
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
-    ],
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-}
-
-SIMPLE_JWT = {
-    'AUTH_HEADER_TYPES': ('Bearer',),
-}
-
-AUTH_USER_MODEL = 'users.CustomUser'
-
-DJOSER = {
-    'USER_ID_FIELD': 'email',  # Use email as the unique identifier
-    'LOGIN_FIELD': 'email',  # Specify email as the login field
-    'SET_PASSWORD_RETYPE': True,  # Requires re_new_password for confirmation
-    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,  # Sends confirmation email after password change
-    'USER_CREATE_PASSWORD_RETYPE': True,
-    'PASSWORD_RESET_CONFIRM_URL': 'http://192.168.1.105:5173/password/reset/confirm/{uid}/{token}',
-    "PASSWORD_RESET_CONFIRM_RETYPE": True,
-    'ACTIVATION_URL': 'activate/{uid}/{token}',
-    'SEND_ACTIVATION_EMAIL': True,
-    "EMAIL": {
-        #"password_reset": "djoser.email.PasswordResetEmail",
-        "password_reset": "users.emails.CustomPasswordResetEmail",
-        "activation": "users.emails.CustomAccountActivationEmail",
-    },
-    'SERIALIZERS': {
-        'user_create': 'users.serializers.CustomUserCreateSerializer',
-        'user': 'users.serializers.CustomUserSerializer',
-        'set_password': 'djoser.serializers.SetPasswordSerializer',
-    },
-}
 
 
 # URL to access static files in the browser
@@ -196,28 +178,6 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://192.168.1.105:5173",  # Replace with your React app's URL
-    "http://localhost:5173",
-    "https://react-stater.vercel.app"
-]
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_METHODS = [
-    "GET",
-    "POST",
-    "PUT",
-    "PATCH",
-    "DELETE",
-    "OPTIONS",
-]
-CORS_ALLOW_HEADERS = list(default_headers) + [
-    'X-CSRFTOKEN',  # Explicitly allow this header
-]
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173",
-    "http://192.168.1.105:5173",
-    "https://react-stater.vercel.app/",
-]
 
 LOGGING = {
     "version": 1,
